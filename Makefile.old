@@ -1,0 +1,7 @@
+all: debug
+
+debug:
+	nvcc -g -o cudahsh.out cudahsh.c
+
+clean:
+	rm -f *.o *.d *.out
