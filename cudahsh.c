@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define HASH_LENGTH
+#define HASH_LENGTH 513
 
 typedef enum {false, true} bool;
 
@@ -18,7 +18,7 @@ void getSHA256(char* sha256, const char* src) {
 	SHA256(src, strlen(src), sha256);
 }
 
-int main(int argc, char** argv[]) {
+int main(int argc, char** argv) {
     if(argc < 3) {
         printf("Usage: cudahsh.out <input file> <output file>\n");
         printf("Use a CUDA compatible GPU to crack the hashes in the input file and output the keys to the output file.\n");
@@ -26,13 +26,13 @@ int main(int argc, char** argv[]) {
         return 1;
     }
 
-    FILE* input = fopen(argv[1]);
+    FILE* input = fopen(argv[1], "r");
     if(!input) {
     	printf("Error opening input file %s!\n", argv[1]);
     	return 1;
     }
 
-    FILE* output = fopen(argv[2]);
+    FILE* output = fopen(argv[2], "w");
     if(!output) {
     	printf("Error opening output file %s!\n", argv[2]);
     	fclose(input);
