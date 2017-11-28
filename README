@@ -2,5 +2,13 @@ To begin development:
 - git clone <your ssh url>
 - sudo <package manager, commonly apt-get> install nvidia-cuda-toolkit
 
-- To compile:
+To compile:
 - make
+
+To run:
+- ./cudahsh.out input output
+
+To debug:
+- gdb ./cudahsh
+- run input output
+- backtrace
