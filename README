@@ -1,6 +1,6 @@
 To begin development:
 - git clone <your ssh url>
-- sudo <package manager, commonly apt-get> install nvidia-cuda-toolkit openssl libssl-dev
+- sudo <package manager, commonly apt-get> install nvidia-cuda-toolkit
 
 - To compile:
 - make
