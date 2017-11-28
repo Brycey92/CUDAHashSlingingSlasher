@@ -1,62 +1,7 @@
-SHELL=/bin/sh
-
-BIN=cudahsh.out
-UNIQUEFLAGS=
-
-ifdef CHECK_OS
-OS=$(shell uname)
-ifeq ($(findstring CYGWIN,$(OS)),CYGWIN)
-	OS=Cygwin
-endif
-ifeq ($(findstring WINNT,$(OS)),WINNT)
-	OS=Cygwin
-endif
-
-ifeq ($(OS), Cygwin)
-	NOCYGWIN= -mno-cygwin
-	#fix for recently introduced problem 
-	SHELL=c:/cygwin/bin/bash.exe
-endif
-endif
-
-#consider all *.c as sources  
-SOURCES.c := $(wildcard *.c)
-
-
-CC=nvcc
-LINK=nvcc
-CFLAGS=$(NOCYGWIN) -c -I. #-ansi
-MORECFLAGS=
-LINKFLAGS=-g -lm -L.
-LINKLIBS=
-OBJS=$(SOURCES.c:.c=.o)
-
 all: debug
-debug : MORECFLAGS=-g
-pedantic : MORECFLAGS=-g -Wfloat-equal -Wundef -Winit-self -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wstrict-overflow=5 -Waggregate-return -Wunreachable-code #-Wwrite-strings -fmessage-length=0
-release : MORECFLAGS=
 
-#%.o : %.c
-#	$(CC) $(CFLAGS) $(MORECFLAGS) $(UNIQUEFLAGS) -o $@ $<
-
-.SUFFIXES:
-.SUFFIXES: .d .o .h .c
-.c.o: ; $(CC) $(CFLAGS) $(MORECFLAGS) $(UNIQUEFLAGS) -o $@ $*.c
-
-.PHONY: clean
-
-%.d: %.c
-	@set -e; rm -f $@; \
-	$(CC) -M $(CFLAGS) $(MORECFLAGS) $(UNIQUEFLAGS) $< > $@.$$$$; \
-	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
-	rm -f $@.$$$$
-
-all release debug pedantic : $(BIN)
-
-$(BIN): $(OBJS)
-	$(LINK) $(LINKFLAGS) $(FLAGS) -o $(BIN) $(OBJS) $(LINKLIBS)
+debug: stringgen.h
+	nvcc -g -o cudahsh.out cudahsh.cu stringgen.c
 
 clean:
-	rm -f $(BIN) $(OBJS) *.d *~
-
-include $(sources:.c=.d)
+	rm -f *.o *.d *.out
