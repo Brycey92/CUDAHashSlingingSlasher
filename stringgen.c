@@ -150,3 +150,4 @@ int main2()
 
     free_charlist(sequence);
 }
+

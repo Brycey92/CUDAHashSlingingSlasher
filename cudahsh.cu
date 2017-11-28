@@ -1,13 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <cuda.h>
 #include "stringgen.h"
 
 #define HASH_LENGTH 64 //number of characters, not counting null (extra space is allocated for null)
 #define KEY_LENGTH 4 //number of characters, not counting null (extra space is allocated for null)
 
-typedef enum {false, true} bool;
+#define N 1664 //best to autodetect this at runtime, but this is fine for now
+
+//typedef enum {false, true} bool;
 
 char* removeNewline(char* str) {
    if(str != NULL && !strcmp(str + (strlen(str) - 1), "\n")) {
@@ -47,6 +50,10 @@ int main(int argc, char** argv) {
     char* buf = (char*) calloc(HASH_LENGTH + 1, sizeof(char));
     char* key = (char*) calloc(KEY_LENGTH + 2, sizeof(char));
     char* hash = (char*) calloc(HASH_LENGTH + 1, sizeof(char));
+    char* keyArr = (char*) calloc(N * (KEY_LENGTH + 2), sizeof(char));
+    //char keyArr[N * (KEY_LENGTH + 2)];
+    char* gpuKeyArr;
+    cudaMalloc(&gpuKeyArr, N * (KEY_LENGTH + 2) * sizeof(char));
 
     for(int i; fgets(buf, HASH_LENGTH, input); i++) {
     	removeNewline(buf);
@@ -60,29 +67,26 @@ int main(int argc, char** argv) {
 	    while(!stopAll && strlen(key) <= KEY_LENGTH)
 	    {
 	    	//generate an array of keys to hash
-	    	while(strlen(key) <= KEY_LENGTH && )
+	    	for(int curKey = 0; curKey < N && strlen(key) <= KEY_LENGTH; curKey++)
 		    {
-		    	sprint_charlist(key, sequence);
-		    	//printf("%s\n", key);
-		    	getHash(hash, key);
-		    	if(!strcmp(hash, buf)) {
-		    		printf("%s\n", hash);
-		    		stopAll = true;
-		    	}
-
+		    	//printf("%d\n", curKey);
+		    	sprint_charlist(&keyArr[curKey * N], sequence);
+		    	//printf("%s %d\n", &keyArr[curKey * N], curKey);
+		    	
 		        next(sequence);
 		    }
+		    
+		    printf("Before memcpy\n");
+		    cudaMemcpy(gpuKeyArr, keyArr, N * (KEY_LENGTH + 2) * sizeof(char), cudaMemcpyHostToDevice);
+		    printf("After memcpy\n");
 
 		    //hash the keys and check the hashes
-	    	sprint_charlist(key, sequence);
-	    	//printf("%s\n", key);
-	    	getHash<<1, 1>>(hash, key);
+	    	getHash<<<1, 1>>>(hash, key);
+
 	    	if(!strcmp(hash, buf)) {
-	    		printf("%s\n", hash);
+	    		fprintf(output, "%s\n", hash);
 	    		stopAll = true;
 	    	}
-
-	        next(sequence);
 	    }
 
 	    free_charlist(sequence);
@@ -93,5 +97,6 @@ int main(int argc, char** argv) {
     free(buf);
     free(key);
     free(hash);
+    cudaFree(gpuKeyArr);
     return 0;
 }

@@ -25,6 +25,9 @@ struct charlist;
  * Elements are initialized
  * @return charlist_t
  */
+#ifdef __cplusplus
+extern "C"
+#endif
 charlist_t* new_charlist_element();
 
 /* Free memory allocated by charlist.
@@ -32,6 +35,9 @@ charlist_t* new_charlist_element();
  * @param list Pointer at the first element.
  * @return void
  */
+#ifdef __cplusplus
+extern "C"
+#endif
 void free_charlist(charlist_t* list);
 
 /* Print the charlist_t data structure.
@@ -42,6 +48,9 @@ void free_charlist(charlist_t* list);
  * @param list Input list of characters.
  * @return void
  */
+#ifdef __cplusplus
+extern "C"
+#endif
 void print_charlist(charlist_t* list);
 
 /* Print the charlist_t data structure to a string.
@@ -53,6 +62,9 @@ void print_charlist(charlist_t* list);
  * @param list Input list of characters.
  * @return void
  */
+#ifdef __cplusplus
+extern "C"
+#endif
 void sprint_charlist(char* str, charlist_t* list);
 
 /* Get next character sequence.
@@ -66,4 +78,7 @@ void sprint_charlist(char* str, charlist_t* list);
  * @param list A pointer to charlist_t.
  * @return void
  */
+#ifdef __cplusplus
+extern "C"
+#endif
 void next(charlist_t* list);
