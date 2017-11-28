@@ -1,21 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "stringgen.h"
 
 #define HASH_LENGTH 513
+#define KEY_LENGTH 4 //number of characterse, not counting null (extra space is allocated for null)
 
 typedef enum {false, true} bool;
 
-void getMD5(char* md5, const char* src) {
-    MD5(src, strlen(src), md5);
-}
-
-void getSHA1(char* sha1, const char* src) {
-	SHA1(src, strlen(src), sha1);
-}
-
-void getSHA256(char* sha256, const char* src) {
-	SHA256(src, strlen(src), sha256);
+//used to hash a test key - the vast majority of the hashes won't match the one we're looking for.
+void getHash(char* hash, const char* src) {
+    //get the hash using whichever algorithm we choose
 }
 
 int main(int argc, char** argv) {
@@ -42,7 +37,22 @@ int main(int argc, char** argv) {
     char* buf = calloc(HASH_LENGTH, sizeof(char));
 
     for(int i; fgets(buf, HASH_LENGTH, input); i++) {
+    	char* key = calloc(KEY_LENGTH + 2, sizeof(char));
+
     	//brute force the hash from buf and print the result to a line in output
+    	charlist_t* sequence;
+	    sequence = new_charlist_element();
+
+	    while(strlen(key) <= KEY_LENGTH)
+	    {
+	    	sprint_charlist(key, sequence);
+	    	printf("%s\n", key);
+	        next(sequence);
+	    }
+
+	    free_charlist(sequence);
+
+    	free(key);
     }
     
     fclose(input);
