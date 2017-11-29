@@ -93,7 +93,6 @@ int main(int argc, char** argv) {
 		    
 		    cudaMemcpy(gpuKeyArr, keyArr, N * (KEY_LENGTH + 2) * sizeof(char), cudaMemcpyHostToDevice);
    		    cudaMemcpy(gpuHash, hash, N * (KEY_LENGTH + 2) * sizeof(char), cudaMemcpyHostToDevice);
-   		    printf("%d\n", strlen(key));
 
 		    //hash the keys and check the hashes
 	    	//getHash<<<blocksPerGrid, threadsPerBlock>>>(hash, key);
