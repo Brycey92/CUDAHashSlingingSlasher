@@ -1,3 +1,6 @@
+Note: The CUDA portion of this code does not work as intended in its current state. Caveat emptor.
+
+
 To begin development:
 - git clone <your ssh url>
 - sudo <package manager, commonly apt-get> install nvidia-cuda-toolkit
